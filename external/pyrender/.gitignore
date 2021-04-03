@@ -1,0 +1,3 @@
+build/
+pyrender.cpp
+*.so

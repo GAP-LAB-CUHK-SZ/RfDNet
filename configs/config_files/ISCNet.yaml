@@ -1,0 +1,86 @@
+method: ISCNet
+resume: False
+finetune: True
+weight: ['out/iscnet/2021-03-30T22:48:41.879548/model_best.pth']
+seed: 10
+device:
+  use_gpu: True
+  gpu_ids: '0,1'
+  num_workers: 8
+data:
+  dataset: scannet
+  split: datasets/splits/fullscan
+  num_point: 80000
+  num_target: 256
+  vote_factor: 1
+  cluster_sampling: vote_fps
+  ap_iou_thresh: 0.25
+  no_height: False
+  use_color_detection: False
+  use_color_completion: False
+  shapenet_path: datasets/ShapeNetv2_data
+  points_unpackbits: True
+  points_subsample: [1024, 1024]
+  hidden_dim: 512
+  c_dim: 512
+  z_dim: 32
+  threshold: 0.5
+  completion_limit_in_train: 10
+  use_cls_for_completion: False
+  skip_propagate: True
+model:
+  backbone:
+    method: Pointnet2Backbone
+    loss: Null
+  voting:
+    method: VotingModule
+    loss: Null
+  detection:
+    method: ProposalModule
+    loss: DetectionLoss
+  skip_propagation:
+    method: SkipPropagation
+    loss: Null
+  completion:
+    method: ONet
+    loss: ONet_Loss
+    weight: 0.005
+optimizer:
+  method: Adam
+  lr: 5e-5
+  betas: [0.9, 0.999]
+  eps: 1e-08
+  weight_decay: 0
+scheduler:
+  patience: 20
+  factor: 0.1
+  threshold: 0.01
+bnscheduler:
+  bn_decay_step: 20
+  bn_decay_rate: 0.5
+  bn_momentum_init: 0.5
+  bn_momentum_max: 0.001
+train:
+  epochs: 240
+  phase: 'completion'
+  freeze: []
+  batch_size: 8
+val:
+  phase: 'completion'
+  batch_size: 8
+  use_cls_nms: True
+  use_3d_nms: True
+  ap_iou_thresholds: [0.25, 0.5]
+  faster_eval: True
+  nms_iou: 0.25
+  use_old_type_nms: False
+  per_class_proposal: True
+  conf_thresh: 0.05
+demo:
+  phase: 'completion'
+log:
+  vis_path: visualization
+  save_results: True
+  vis_step: 500
+  print_step: 10
+  path: out/iscnet
