@@ -164,11 +164,12 @@ class ISCNet(BaseNetwork):
         voxel_size = (inputs['point_clouds'][0,:,2].max()-inputs['point_clouds'][0,:,2].min()).item()/46
 
         '''fit mesh points to scans'''
-        pred_mesh_dict = {'meshes':meshes, 'proposal_ids':BATCH_PROPOSAL_IDs} if evaluate_mesh_mAP else None
+        pred_mesh_dict = None
+        if self.cfg.config[mode]['phase'] == 'completion' and self.cfg.config['generation']['generate_mesh']:
+            pred_mesh_dict = {'meshes': meshes, 'proposal_ids': BATCH_PROPOSAL_IDs}
+            parsed_predictions = self.fit_mesh_to_scan(pred_mesh_dict, parsed_predictions, eval_dict, inputs['point_clouds'], dump_threshold)
 
-        if self.cfg.config[mode]['phase'] == 'completion':
-            parsed_predictions = self.fit_mesh_to_scan(pred_mesh_dict, parsed_predictions, eval_dict, inputs['point_clouds'])
-
+        pred_mesh_dict = pred_mesh_dict if self.cfg.config[mode]['evaluate_mesh_mAP'] else None
         eval_dict = assembly_pred_map_cls(eval_dict, parsed_predictions, self.cfg.eval_config, mesh_outputs=pred_mesh_dict, voxel_size=voxel_size)
 
         gt_mesh_dict = {'root_dir':self.cfg.config['data']['shapenet_path'],
@@ -179,7 +180,7 @@ class ISCNet(BaseNetwork):
         completion_loss = torch.cat([completion_loss.unsqueeze(0), mask_loss.unsqueeze(0)], dim=0)
         return end_points, completion_loss.unsqueeze(0), shape_example, BATCH_PROPOSAL_IDs, eval_dict, meshes, iou_stats, parsed_predictions
 
-    def fit_mesh_to_scan(self, pred_mesh_dict, parsed_predictions, eval_dict, input_scan):
+    def fit_mesh_to_scan(self, pred_mesh_dict, parsed_predictions, eval_dict, input_scan, dump_threshold):
         '''fit meshes to input scan'''
         pred_corners_3d_upright_camera = parsed_predictions['pred_corners_3d_upright_camera']
         pred_sem_cls = parsed_predictions['pred_sem_cls']
@@ -200,7 +201,7 @@ class ISCNet(BaseNetwork):
         pc_in_box_mask_list = []
         for i in range(bsize):
             for j in range(N_proposals):
-                if not (pred_mask[i, j] == 1 and obj_prob[i, j] > self.cfg.eval_config['conf_thresh']):
+                if not (pred_mask[i, j] == 1 and obj_prob[i, j] > dump_threshold):
                     continue
                 # get mesh points
                 mesh_data = pred_mesh_dict['meshes'][list(pred_mesh_dict['proposal_ids'][i,:,0]).index(j)]
@@ -447,9 +448,9 @@ class ISCNet(BaseNetwork):
         batch_size, n_objects, n_points, point_dim = data['object_points'].size()
         N_proposals = BATCH_PROPOSAL_IDs.size(1)
 
-        point_ids = BATCH_PROPOSAL_IDs[:, :, 1].unsqueeze(-1).unsqueeze(-1).expand(batch_size, N_proposals,
+        object_ids = BATCH_PROPOSAL_IDs[:, :, 1].unsqueeze(-1).unsqueeze(-1).expand(batch_size, N_proposals,
                                                                                    n_points, point_dim)
-        input_points_for_completion = torch.gather(data['object_points'], 1, point_ids)
+        input_points_for_completion = torch.gather(data['object_points'], 1, object_ids)
         input_points_for_completion = input_points_for_completion.view(batch_size * N_proposals,
                                                                        n_points,
                                                                        point_dim)

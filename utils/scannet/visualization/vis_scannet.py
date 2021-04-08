@@ -277,6 +277,13 @@ class Vis_Scannet(object):
 
         return scalar_bar
 
+    def set_camera(self, position, focal_point, cam_K):
+        camera = vtk.vtkCamera()
+        camera.SetPosition(*position)
+        camera.SetFocalPoint(*focal_point[0])
+        camera.SetViewUp(*focal_point[1])
+        camera.SetViewAngle((2*np.arctan(cam_K[1][2]/cam_K[0][0]))/np.pi*180)
+        return camera
 
     def set_render(self, detection=True):
         renderer = vtk.vtkRenderer()

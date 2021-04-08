@@ -56,7 +56,7 @@ test:
   use_old_type_nms: False
   per_class_proposal: True
   conf_thresh: 0.05
-  evaluate_mesh_mAP: True
+  evaluate_mesh_mAP: False
 generation:
   generate_mesh: True
   resolution_0: 32
@@ -65,7 +65,7 @@ generation:
   refinement_step: 0
   simplify_nfaces: Null
   dump_threshold: 0.5
-  dump_results: False
+  dump_results: True
 demo:
   phase: 'completion'
 log:

@@ -106,7 +106,6 @@ def voc_ap(rec, prec, use_07_metric=False):
                 p = np.max(prec[rec >= t])
             ap = ap + p / 11.
     else:
-        # correct AP calculation
         # first append sentinel values at the end
         mrec = np.concatenate(([0.], rec, [1.]))
         mpre = np.concatenate(([0.], prec, [0.]))
@@ -422,7 +421,7 @@ def eval_det_multiprocessing_w_mesh(pred_all, gt_all, ovthresh=0.25, use_07_metr
 
     return (rec, prec, ap), (rec_mesh, prec_mesh, ap_mesh)
 
-def eval_det_multiprocessing_wo_mesh(pred_all, gt_all, ovthresh=0.25, use_07_metric=False, get_iou_func=get_iou):
+def eval_det_multiprocessing_wo_mesh(pred_all, gt_all, ovthresh=0.25, use_07_metric=True, get_iou_func=get_iou):
     """ Generic functions to compute precision/recall for object detection
         for multiple classes.
         Input:

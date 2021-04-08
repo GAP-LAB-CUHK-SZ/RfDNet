@@ -6,9 +6,11 @@ from utils import pc_util
 import os
 from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 from utils.scannet.visualization.vis_gt import Vis_base
+from glob import glob
+import re
 
 if __name__ == '__main__':
-    root_path = '/home/ynie/Project/SceneCompletion/out/iscnet/2020-10-30T15:40:24.913443/visualization/test_90_scene0575_00'
+    root_path = 'out/iscnet/2021-04-08T10:56:00.473474/visualization/test_36_scene0549_00'
     predicted_boxes = np.load(os.path.join(root_path, '000000_pred_confident_nms_bbox.npz'))
     input_point_cloud = pc_util.read_ply(os.path.join(root_path, '000000_pc.ply'))
     bbox_params = predicted_boxes['obbs']
@@ -20,8 +22,12 @@ if __name__ == '__main__':
     center_list = []
     vector_list = []
     class_ids = []
-    for map_data, bbox_param in zip(proposal_map, bbox_params):
-        mesh_file = os.path.join(root_path, 'proposal_%d_target_%d_class_%d_mesh.ply' % tuple(map_data))
+
+    for mesh_file in glob(os.path.join(root_path, 'proposal_*.ply')):
+        proposal_id, _, cls_id = \
+        re.findall(r'proposal_(\d+)_target_(\d+)_class_(\d+)_mesh.ply', os.path.basename(mesh_file))[0]
+        bbox_param = bbox_params[list(proposal_map[:, 0]).index(int(proposal_id))]
+
         ply_reader = vtk.vtkPLYReader()
         ply_reader.SetFileName(mesh_file)
         ply_reader.Update()
@@ -52,17 +58,17 @@ if __name__ == '__main__':
         instance_models.append(ply_reader)
         center_list.append(center)
         vector_list.append(vectors)
-        class_ids.append(map_data[2])
+        class_ids.append(int(cls_id))
 
     input_point_cloud = np.hstack([input_point_cloud, np.zeros_like(input_point_cloud)])
 
     scene = Vis_base(scene_points=input_point_cloud, instance_models=instance_models, center_list=center_list,
                      vector_list=vector_list, class_ids=class_ids)
-    save_path = '/home/ynie/Project/SceneCompletion/out/selected_samples'
+    save_path = './out/samples'
     save_path = os.path.join(save_path, '_'.join(os.path.basename(root_path).split('_')[2:]))
     if not os.path.exists(save_path):
-        os.mkdir(save_path)
-    camera_center = np.array([-3, 2, 3])
+        os.makedirs(save_path)
+    camera_center = np.array([0, -3, 3])
     scene.visualize(centroid=camera_center, save_path=os.path.join(save_path, 'pred.png'))
     scene.visualize(centroid=camera_center, save_path=os.path.join(save_path, 'points.png'), only_points=True)
 

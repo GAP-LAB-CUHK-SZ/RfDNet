@@ -46,6 +46,41 @@ class SkipPropagation(nn.Module):
 
         return xyz, features
 
+    def generate(self, box_xyz, box_orientations, box_feature, input_point_cloud):
+        xyz, features = self._break_up_pc(input_point_cloud)
+
+        point_instance_labels = torch.zeros_like(features) # labels are not used in generation.
+        features = torch.cat([features, point_instance_labels], dim=1)
+
+        xyz, features = self.stn(xyz, features, box_xyz, box_orientations)
+
+        batch_size, _, N_proposals, N_points = features.size()
+
+        features = features[:, 0].unsqueeze(1)
+        input_features = torch.cat([xyz, features], dim=1)
+
+        input_features = input_features.permute([0, 2, 3, 1]).contiguous().view(batch_size * N_proposals, N_points, -1)
+
+        # use PointNet to predict masks
+        seg_pred, trans_feat = self.point_seg(input_features.transpose(1,2).contiguous())
+        seg_pred = seg_pred.contiguous().view(batch_size * N_proposals * N_points, 2)
+
+        box_feature = box_feature.transpose(1, 2).contiguous().view(batch_size * N_proposals, -1).unsqueeze(1)
+        box_feature = box_feature.repeat(1, N_points, 1)
+        input_features = torch.cat([input_features, box_feature], dim=2)
+
+        # get segmented masks
+        point_seg_mask = torch.argmax(seg_pred, dim=1).view(batch_size*N_proposals, N_points)
+        point_seg_mask = point_seg_mask.unsqueeze(-1).expand(batch_size * N_proposals, N_points, input_features.shape[-1])
+        input_features = input_features * point_seg_mask.float()
+
+        input_features = self.encoder(input_features)
+        input_features = input_features.view(batch_size, N_proposals, -1).transpose(1, 2)
+
+        # input_features = self.self_attn(input_features)
+
+        return input_features
+
     def forward(self, box_xyz, box_orientations, box_feature, input_point_cloud, point_instance_labels, proposal_instance_labels):
         '''
         Extract point features from input pointcloud, and propagate to box xyz.

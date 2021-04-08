@@ -250,8 +250,8 @@ class Vis_base(Vis_Scannet):
 
 if __name__ == '__main__':
     from utils import pc_util
-    scene_dirname = 'scene0616_01'
-    point_path = 'out/iscnet/2020-11-03T11:46:00.058249/visualization'
+    scene_dirname = 'scene0549_00'
+    point_path = 'out/iscnet/2021-04-08T10:56:00.473474/visualization'
     point_path = os.path.join(point_path, [file for file in os.listdir(point_path) if scene_dirname in file][0])
     fused_points = pc_util.read_ply(os.path.join(point_path, '000000_pc.ply'))
     with open(os.path.join(path_config.processed_data_path, scene_dirname, 'bbox.pkl'), 'rb') as file:
@@ -335,8 +335,8 @@ if __name__ == '__main__':
 
     scene = Vis_base(scene_points=fused_points, instance_models=instance_models, center_list=center_list,
                      vector_list=vector_list, class_ids=class_ids)
-    save_path = '/home/ynie/Project/SceneCompletion/out/selected_samples'
+    save_path = 'out/samples'
     save_path = os.path.join(save_path, scene_dirname)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
-    scene.visualize(centroid=np.array([2, -3, 3]), save_path=os.path.join(save_path, 'gt.png'))
+    scene.visualize(centroid=np.array([0, -3, 3]), save_path=os.path.join(save_path, 'gt.png'))

@@ -12,7 +12,8 @@ import random
 import pickle
 from utils.shapenet import ShapeNetv2_Watertight_path
 from utils.shapenet.common import Mesh
-
+from glob import glob
+import re
 
 
 class Vis_base(Vis_Scannet):
@@ -143,7 +144,7 @@ class Vis_base(Vis_Scannet):
         renderer.SetActiveCamera(camera)
 
         '''draw scene points'''
-        point_size = 4 if only_points else 3
+        point_size = 4
         colors = np.linalg.norm(self.scene_points[:, :3]-centroid, axis=1)
         colors = self.depth_palette[np.int16((colors-colors.min())/(colors.max()-colors.min())*99)]
         point_actor = self.set_actor(
@@ -235,10 +236,8 @@ class Vis_base(Vis_Scannet):
         return min_max_dist
 
 if __name__ == '__main__':
-    vis_root = '/home/ynie/Project/SceneCompletion/out/iscnet/2020-10-30T15:40:24.913443/visualization'
-    # vis_root = '/home/ynie/Project/SceneCompletion/out/iscnet/2020-10-30T15:41:28.575801/visualization'
-    # vis_root = '/home/ynie/Project/SceneCompletion/out/iscnet/2020-11-03T11:46:00.058249/visualization'
-    scene_name = 'scene0598_01'
+    vis_root = 'out/iscnet/2021-04-08T15:42:39.519971/visualization'
+    scene_name = 'scene0549_00'
     if 'test' in scene_name:
         sample_name = scene_name
         scene_name = '_'.join(sample_name.split('_')[2:])
@@ -246,11 +245,11 @@ if __name__ == '__main__':
         sample_name = [file for file in os.listdir(vis_root) if scene_name in file][0]
 
     root_path = os.path.join(vis_root, sample_name)
-    save_path = '/home/ynie/Project/SceneCompletion/out/selected_samples'
+    save_path = './out/samples'
     save_path = os.path.join(save_path, scene_name)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
-    camera_center = np.array([0, 2, 2])
+    camera_center = np.array([0, -3, 3])
     # --------------------------------------------------------------------------------------------------------------
     # For prediction
     # --------------------------------------------------------------------------------------------------------------
@@ -266,8 +265,11 @@ if __name__ == '__main__':
     vector_list = []
     class_ids = []
 
-    for map_data, bbox_param in zip(proposal_map, bbox_params):
-        mesh_file = os.path.join(root_path, 'proposal_%d_target_%d_class_%d_mesh.ply' % tuple(map_data))
+    for mesh_file in glob(os.path.join(root_path, 'proposal_*.ply')):
+        proposal_id, _, cls_id = \
+        re.findall(r'proposal_(\d+)_target_(\d+)_class_(\d+)_mesh.ply', os.path.basename(mesh_file))[0]
+        bbox_param = bbox_params[list(proposal_map[:, 0]).index(int(proposal_id))]
+
         ply_reader = vtk.vtkPLYReader()
         ply_reader.SetFileName(mesh_file)
         ply_reader.Update()
@@ -297,7 +299,7 @@ if __name__ == '__main__':
         instance_models.append(ply_reader)
         center_list.append(center)
         vector_list.append(vectors)
-        class_ids.append(map_data[2])
+        class_ids.append(int(cls_id))
 
     vtk_instance_models = {'pred':instance_models}
     vtk_center_list = {'pred': center_list}
@@ -323,7 +325,7 @@ if __name__ == '__main__':
         obj_model = os.path.join('./temp', box['shapenet_catid'], box['shapenet_id'] + '.obj')
         if not os.path.exists(obj_model):
             if not os.path.exists(os.path.dirname(obj_model)):
-                os.mkdir(os.path.dirname(obj_model))
+                os.makedirs(os.path.dirname(obj_model))
             Mesh.from_off(shapenet_model).to_obj(obj_model)
 
         vtk_object = vtk.vtkOBJReader()

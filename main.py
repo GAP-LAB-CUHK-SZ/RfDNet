@@ -11,7 +11,7 @@ def parse_args():
     parser.add_argument('--config', type=str, default='configs/config_files/ISCNet.yaml',
                         help='configure file for training or testing.')
     parser.add_argument('--mode', type=str, default='train', help='train, test or demo.')
-    parser.add_argument('--demo_path', type=str, default='demo/inputs/1', help='Please specify the demo path.')
+    parser.add_argument('--demo_path', type=str, default='demo/inputs/scene0549_00.off', help='Please specify the demo path.')
     return parser.parse_args()
 
 if __name__ == '__main__':

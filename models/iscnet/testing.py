@@ -79,18 +79,21 @@ class Tester(BaseTester, Trainer):
             os.mkdir(dump_dir)
 
         DUMP_CONF_THRESH = self.cfg.config['generation']['dump_threshold'] # Dump boxes with obj prob larger than that.
+        batch_id = 0
+
         '''Predict meshes'''
+        pred_sem_cls = our_data[7]['pred_sem_cls'][batch_id].cpu().numpy()
         if our_data[5] is not None:
             meshes = our_data[5]
             BATCH_PROPOSAL_IDs = our_data[3][0].cpu().numpy()
             for mesh_data, map_data in zip(meshes, BATCH_PROPOSAL_IDs):
-                object_mesh = os.path.join(dump_dir, 'proposal_%d_target_%d_class_%d_mesh.ply' % tuple(map_data))
+                str_nums = (map_data[0], map_data[1], pred_sem_cls[map_data[0]])
+                object_mesh = os.path.join(dump_dir, 'proposal_%d_target_%d_class_%d_mesh.ply' % str_nums)
                 mesh_data.export(object_mesh)
         else:
             BATCH_PROPOSAL_IDs = np.empty(0)
 
         '''Predict boxes'''
-        batch_id = 0
         est_data = our_data[0]
         pred_corners_3d_upright_camera = our_data[7]['pred_corners_3d_upright_camera']
         objectness_prob = our_data[7]['obj_prob'][batch_id]
