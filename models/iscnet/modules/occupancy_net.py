@@ -1,4 +1,4 @@
-# Occupancy Net
+# Occupancy Networks
 import torch
 import torch.nn as nn
 from models.registers import MODULES

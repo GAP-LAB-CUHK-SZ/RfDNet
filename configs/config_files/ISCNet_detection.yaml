@@ -1,19 +1,19 @@
 method: ISCNet
 resume: False
-finetune: True
-weight: ['out/pretrained_models/pretrained_weight.pth']
+finetune: False
+weight: []
 seed: 10
 device:
   use_gpu: True
-  gpu_ids: '0'
-  num_workers: 0
+  gpu_ids: '0,1'
+  num_workers: 8
 data:
   dataset: scannet
   split: datasets/splits/fullscan
   num_point: 80000
   num_target: 256
   vote_factor: 1
-  cluster_sampling: seed_fps
+  cluster_sampling: vote_fps
   ap_iou_thresh: 0.25
   no_height: False
   use_color_detection: False
@@ -44,33 +44,43 @@ model:
   completion:
     method: ONet
     loss: ONet_Loss
-    weight: 0.005
-test:
-  phase: 'completion'
-  batch_size: 1
+    weight: 1
+optimizer:
+  method: Adam
+  lr: 1e-3
+  betas: [0.9, 0.999]
+  eps: 1e-08
+  weight_decay: 0
+scheduler:
+  patience: 20
+  factor: 0.1
+  threshold: 0.01
+bnscheduler:
+  bn_decay_step: 20
+  bn_decay_rate: 0.5
+  bn_momentum_init: 0.5
+  bn_momentum_max: 0.001
+train:
+  epochs: 240
+  phase: 'detection'
+  freeze: []
+  batch_size: 8
+val:
+  phase: 'detection'
+  batch_size: 8
   use_cls_nms: True
   use_3d_nms: True
-  ap_iou_thresholds: [0.5]
-  faster_eval: False
+  ap_iou_thresholds: [0.25, 0.5]
+  faster_eval: True
   nms_iou: 0.25
   use_old_type_nms: False
   per_class_proposal: True
   conf_thresh: 0.05
-  evaluate_mesh_mAP: False
-generation:
-  generate_mesh: True
-  resolution_0: 32
-  upsampling_steps: 0
-  use_sampling: False
-  refinement_step: 0
-  simplify_nfaces: Null
-  dump_threshold: 0.5
-  dump_results: True
 demo:
-  phase: 'completion'
+  phase: 'detection'
 log:
   vis_path: visualization
   save_results: True
-  vis_step: 100
+  vis_step: 500
   print_step: 10
   path: out/iscnet

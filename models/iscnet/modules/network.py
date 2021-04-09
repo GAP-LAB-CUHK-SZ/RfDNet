@@ -172,8 +172,7 @@ class ISCNet(BaseNetwork):
         pred_mesh_dict = pred_mesh_dict if self.cfg.config[mode]['evaluate_mesh_mAP'] else None
         eval_dict = assembly_pred_map_cls(eval_dict, parsed_predictions, self.cfg.eval_config, mesh_outputs=pred_mesh_dict, voxel_size=voxel_size)
 
-        gt_mesh_dict = {'root_dir':self.cfg.config['data']['shapenet_path'],
-                        'shapenet_catids':data['shapenet_catids'],
+        gt_mesh_dict = {'shapenet_catids':data['shapenet_catids'],
                         'shapenet_ids':data['shapenet_ids']} if evaluate_mesh_mAP else None
         eval_dict['batch_gt_map_cls'] = assembly_gt_map_cls(parsed_gts, mesh_outputs=gt_mesh_dict, voxel_size=voxel_size)
 
@@ -428,10 +427,8 @@ class ISCNet(BaseNetwork):
                     sample_ids = objectness_sort[gt_ids]
                 else:
                     raise NameError('Please specify a correct filtering mode.')
-                sample_ids = sample_ids.type(torch.BoolTensor)
             else:
                 sample_ids = (objectness_probs[batch_id] > DUMP_CONF_THRESH).cpu().numpy()*batch_sample_ids[batch_id]
-                sample_ids = sample_ids.astype(np.bool)
 
             proposal_to_gt_box_w_cls = proposal_to_gt_box_w_cls[sample_ids].long()
             proposal_id_list.append(proposal_to_gt_box_w_cls.unsqueeze(0))

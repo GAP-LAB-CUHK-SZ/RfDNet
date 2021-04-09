@@ -17,6 +17,7 @@ from trimesh.exchange.binvox import voxelize_mesh
 import os
 from multiprocessing import Pool
 from functools import partial
+from utils.shapenet import ShapeNetv2_Watertight_Scaled_Simplified_path
 
 transform_shapenet = np.array([[0, 0, -1], [-1, 0, 0], [0, 1, 0]])
 
@@ -376,11 +377,10 @@ def assembly_gt_map_cls(parsed_gts, mesh_outputs=None, voxel_size=0.047):
 
     if mesh_outputs is not None:
         assert bsize == 1
-        root_dir = mesh_outputs['root_dir']
         shapenet_catids = mesh_outputs['shapenet_catids'][0]
         shapenet_ids = mesh_outputs['shapenet_ids'][0]
         meshes = [
-            trimesh.load(os.path.join(root_dir, 'watertight_scaled_simplified', shapenet_catid, shapenet_id + '.off'),
+            trimesh.load(os.path.join(ShapeNetv2_Watertight_Scaled_Simplified_path, shapenet_catid, shapenet_id + '.off'),
                          process=False) for shapenet_catid, shapenet_id in zip(shapenet_catids, shapenet_ids)]
 
     batch_gt_map_cls = []

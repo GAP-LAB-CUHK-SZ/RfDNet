@@ -10,7 +10,7 @@ from configs.path_config import PathConfig, ScanNet_OBJ_CLASS_IDS
 from utils.scannet.visualization.vis_scannet import Vis_Scannet
 import random
 import pickle
-from utils.shapenet import ShapeNetv2_Watertight_path
+from utils.shapenet import ShapeNetv2_Watertight_Scaled_path
 from utils.shapenet.common import Mesh
 from glob import glob
 import re
@@ -319,7 +319,7 @@ if __name__ == '__main__':
     class_ids = []
     for box in bboxes:
         box['box3D'][6] = np.mod(box['box3D'][6] + np.pi, 2 * np.pi) - np.pi
-        shapenet_model = os.path.join(ShapeNetv2_Watertight_path, box['shapenet_catid'], box['shapenet_id'] + '.off')
+        shapenet_model = os.path.join(ShapeNetv2_Watertight_Scaled_path, box['shapenet_catid'], box['shapenet_id'] + '.off')
         assert os.path.exists(shapenet_model)
 
         obj_model = os.path.join('./temp', box['shapenet_catid'], box['shapenet_id'] + '.obj')

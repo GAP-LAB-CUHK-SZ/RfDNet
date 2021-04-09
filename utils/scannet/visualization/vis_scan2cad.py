@@ -156,7 +156,7 @@ class Vis_Scan2CAD(Vis_Scannet):
             corners, faces = self.get_box_corners(center, vectors)
             color = self.palette_cls[cls_id] * 255
             bbox_actor = self.set_actor(self.set_mapper(self.set_cube_prop(corners, faces, color), 'box'))
-            bbox_actor.GetProperty().SetOpacity(0.5)
+            bbox_actor.GetProperty().SetOpacity(0.3)
             bbox_actor.GetProperty().SetInterpolationToPBR()
             renderer.AddActor(bbox_actor)
 
@@ -193,7 +193,7 @@ if __name__ == '__main__':
 
     filename_json = path_config.scan2cad_annotation_path
 
-    scene_dirname = 'scene0010_00'
+    scene_dirname = 'scene0001_00'
     gt_dirname = os.path.join(path_config.metadata_root, 'scans', scene_dirname)
     assert os.path.exists(gt_dirname)
 

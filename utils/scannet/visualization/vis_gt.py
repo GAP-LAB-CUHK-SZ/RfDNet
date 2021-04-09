@@ -4,23 +4,19 @@ author: ynie
 date: July, 2020
 '''
 import sys
-
 sys.path.append('.')
 import os
 from configs.path_config import PathConfig, ScanNet_OBJ_CLASS_IDS
 import vtk
 from utils.scannet.visualization.vis_scannet import Vis_Scannet
-from utils.scannet import scannet_utils
 import numpy as np
-from utils.shapenet import ShapeNetv2_Watertight_path
-from utils.read_and_write import read_obj
+from utils.shapenet import ShapeNetv2_Watertight_Scaled_Simplified_path
 from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 from utils.pc_util import rotz
 import pickle
 import random
 import seaborn as sns
 from utils.shapenet.common import Mesh
-
 
 path_config = PathConfig('scannet')
 
@@ -249,11 +245,8 @@ class Vis_base(Vis_Scannet):
         render_window_interactor.Start()
 
 if __name__ == '__main__':
-    from utils import pc_util
-    scene_dirname = 'scene0549_00'
-    point_path = 'out/iscnet/2021-04-08T10:56:00.473474/visualization'
-    point_path = os.path.join(point_path, [file for file in os.listdir(point_path) if scene_dirname in file][0])
-    fused_points = pc_util.read_ply(os.path.join(point_path, '000000_pc.ply'))
+    scene_dirname = 'scene0001_00'
+    fused_points = np.load(os.path.join(path_config.processed_data_path, scene_dirname, 'full_scan.npz'))['mesh_vertices'][:,:3]
     with open(os.path.join(path_config.processed_data_path, scene_dirname, 'bbox.pkl'), 'rb') as file:
         bboxes = pickle.load((file))
 
@@ -294,7 +287,7 @@ if __name__ == '__main__':
         '''Normalize angles to [-np.pi, np.pi]'''
         box['box3D'][6] = np.mod(box['box3D'][6] + np.pi, 2 * np.pi) - np.pi
 
-        shapenet_model = os.path.join(ShapeNetv2_Watertight_path, box['shapenet_catid'], box['shapenet_id'] + '.off')
+        shapenet_model = os.path.join(ShapeNetv2_Watertight_Scaled_Simplified_path, box['shapenet_catid'], box['shapenet_id'] + '.off')
         assert os.path.exists(shapenet_model)
 
         obj_model = os.path.join('./temp', box['shapenet_catid'], box['shapenet_id'] + '.obj')
@@ -339,4 +332,4 @@ if __name__ == '__main__':
     save_path = os.path.join(save_path, scene_dirname)
     if not os.path.exists(save_path):
         os.mkdir(save_path)
-    scene.visualize(centroid=np.array([0, -3, 3]), save_path=os.path.join(save_path, 'gt.png'))
+    scene.visualize(centroid=np.array([3, 0, 3]), save_path=os.path.join(save_path, 'verify.png'))
