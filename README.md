@@ -226,12 +226,13 @@ You can choose each of the following ways for evaluation.
 ### Citation
 If you find our work helpful, please consider citing
 ```
-@article{nie2020rfd,
-  title={RfD-Net: Point Scene Understanding by Semantic Instance Reconstruction},
-  author={Nie, Yinyu and Hou, Ji and Han, Xiaoguang and Nie{\ss}ner, Matthias},
-  journal={arXiv preprint arXiv:2011.14744},
-  year={2020}
+@inproceedings{Nie_2021_CVPR,
+    title={RfD-Net: Point Scene Understanding by Semantic Instance Reconstruction},
+    author={Nie, Yinyu and Hou, Ji and Han, Xiaoguang and Nie{\ss}ner, Matthias},
+	booktitle={Proc. Computer Vision and Pattern Recognition (CVPR), IEEE},
+	year={2021}
 }
+
 ```
 
 ---
