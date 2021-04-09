@@ -55,6 +55,8 @@ If everything goes smooth, there will be a GUI window popped up and you can inte
 If you run it on machines without X display server, you can use the `offscreen` mode by setting `offline=True` in `demo.py`.
 The rendered image will be saved in `demo/outputs/some_scene_id/pred.png`.
 
+---
+
 ### Prepare Data
 In our paper, we use the input point cloud from the [ScanNet](http://www.scan-net.org/) dataset, and the annotated instance CAD models from the [Scan2CAD](https://github.com/skanti/Scan2CAD) dataset.
 Scan2CAD aligns the object CAD models from [ShapeNetCore.v2](https://shapenet.org/) to each object in ScanNet, and we use these aligned CAD models as the ground-truth.
@@ -208,6 +210,8 @@ You can choose each of the following ways for evaluation.
    ```
    The log file will saved in `out/iscnet/a_folder_named_with_script_time/log.txt`
 
+---
+
 #### Differences to the paper
 1. The original paper was implemented with Pytorch 1.1.0,
    and we reconfigure our code to fit with Pytorch 1.7.1.
@@ -216,6 +220,9 @@ You can choose each of the following ways for evaluation.
 3. A different learning rate scheduler is adopted.
    The learning rate decreases to 0.1x if there is no gain within 20 steps, which is much more efficient.
    
+
+---
+
 ### Citation
 If you find our work helpful, please consider citing
 ```
@@ -227,6 +234,7 @@ If you find our work helpful, please consider citing
 }
 ```
 
+---
 
 ### License
 RfD-Net is relased under the MIT License. See the [LICENSE file](https://github.com/yinyunie/RfDNet/blob/main/LICENSE ) for more details.
