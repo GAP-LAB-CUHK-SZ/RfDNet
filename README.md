@@ -7,6 +7,8 @@ In [CVPR, 2021](http://cvpr2021.thecvf.com/).
 
 <img src="out/samples/scene0549_00/points.png" alt="points.png" width="45%" /> <img src="out/samples/scene0549_00/pred.png" alt="pred.png" width="45%" />
 
+From an incomplete point cloud of a 3D scene (left), our method learns to jointly understand the 3D objects and reconstruct instance meshes as the output (right).
+
 ---
 
 ### Install
@@ -53,7 +55,7 @@ If everything goes smooth, there will be a GUI window popped up and you can inte
 If you run it on machines without X display server, you can use the `offscreen` mode by setting `offline=True` in `demo.py`.
 The rendered image will be saved in `demo/outputs/some_scene_id/pred.png`.
 
-### Data preparation
+### Prepare Data
 In our paper, we use the input point cloud from the [ScanNet](http://www.scan-net.org/) dataset, and the annotated instance CAD models from the [Scan2CAD](https://github.com/skanti/Scan2CAD) dataset.
 Scan2CAD aligns the object CAD models from [ShapeNetCore.v2](https://shapenet.org/) to each object in ScanNet, and we use these aligned CAD models as the ground-truth.
 
@@ -131,7 +133,7 @@ or <br>
 We use the configuration file (see 'configs/config_files/****.yaml') to fully control the training/testing/generating process.
 You can check a template at `configs/config_files/ISCNet.yaml`.
 
-#### Training 
+#### Training
 We firstly pretrain our **detection** module and **completion** module followed by a joint refining. You can follow the process below.
 
 1. Pretrain the **detection** module by
