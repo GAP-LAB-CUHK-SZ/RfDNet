@@ -29,6 +29,7 @@ From an incomplete point cloud of a 3D scene (left), our method learns to jointl
     ```
 3. Install [PointNet++](https://github.com/erikwijmans/Pointnet2_PyTorch) by
     ```
+   export CUDA_HOME=/usr/local/cuda-X.X  # replace cuda-X.X with your cuda version.
    cd external/pointnet2_ops_lib
    pip install .
     ```
