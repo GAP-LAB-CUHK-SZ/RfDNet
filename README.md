@@ -53,7 +53,7 @@ python main.py --config configs/config_files/ISCNet_test.yaml --mode demo --demo
 If everything goes smooth, there will be a GUI window popped up and you can interact with the scene as below.
 <img src="demo/screenshots/screenshot_demo.png" alt="screenshot_demo.png" width="60%" />
 
-If you run it on machines without X display server, you can use the `offscreen` mode by setting `offline=True` in `demo.py`.
+You can also use the `offscreen` mode by setting `offline=True` in `demo.py` to render the 3D scene.
 The rendered image will be saved in `demo/outputs/some_scene_id/pred.png`.
 
 ---
