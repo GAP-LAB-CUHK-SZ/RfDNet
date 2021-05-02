@@ -2,7 +2,7 @@
 # author: ynie
 # date: Feb, 2020
 import torch
-from external.pointnet2.pytorch_utils import BNMomentumScheduler
+from external.pointnet2_ops_lib.pointnet2_ops.pytorch_utils import BNMomentumScheduler
 
 def has_optim_in_children(subnet):
     '''
