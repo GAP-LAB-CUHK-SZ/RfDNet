@@ -79,7 +79,7 @@ def load_optimizer(config, net):
                                  'lr': float(module['optim_spec']['lr']),
                                  'betas': tuple(module['optim_spec']['betas']),
                                  'eps': float(module['optim_spec']['eps']),
-                                 'weight_decat': float(module['optim_spec']['weight_decay'])})
+                                 'weight_deca': float(module['optim_spec']['weight_decay'])})
 
         '''collect parameters with default optimizer spec'''
         other_params = list()
