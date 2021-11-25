@@ -32,7 +32,11 @@ model:
   completion:
     method: ONet
     loss: ONet_Loss # reconstruction loss
-    weight: 1
+    weight: 0.7
+  class_encode:
+    metod: ClassEncoder
+    loss: PriorClassificationLoss
+    weight: 0.3
 optimizer:
   method: Adam
   lr: 1e-4

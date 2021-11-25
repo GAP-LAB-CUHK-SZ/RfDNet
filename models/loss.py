@@ -411,3 +411,13 @@ class BoxNetDetectionLoss(BaseLoss):
                 'size_cls_loss': size_cls_loss.item(),
                 'size_reg_loss': size_reg_loss.item(),
                 'obj_acc': obj_acc.item()}
+
+
+@LOSSES.register_module
+class PriorClassificationLoss(BaseLoss):
+    def __call__(self, est_data, gt_data, dataset_config):
+        '''
+        just calculates the loss of logits.. and maybe doing
+        some metric learning loss on features
+        '''
+        pass

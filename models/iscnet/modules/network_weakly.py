@@ -34,7 +34,7 @@ class ISCNet_WEAK(ISCNet):
             if cfg.config['data']['skip_propagate']:
                 phase_names += ['skip_propagation']
         if cfg.config[cfg.config['mode']]['phase'] in ['prior']:
-            phase_names += ['completion']
+            phase_names += ['completion', 'class_encode']
                 
         if (not cfg.config['model']) or (not phase_names):
             cfg.log_string('No submodule found. Please check the phase name and model definition.')
@@ -56,7 +56,9 @@ class ISCNet_WEAK(ISCNet):
         '''freeze submodules or not'''
         self.freeze_modules(cfg)
     def sample_for_prior(inputs, sample_size):
-        # temporary naive implementation 
+        # temporary naive implementation should be either random
+        # or sampled by removing some chungs of the input pC so it has holes
+        # instead of being evenly distributed
         return inputs[:, 0:sample_size]
     def forward(self, data, export_shape=False):
         '''
@@ -67,15 +69,18 @@ class ISCNet_WEAK(ISCNet):
         '''
         if self.cfg.config[self.cfg.config['mode']]['phase'] != 'prior':
             pc = data['point_clouds']
-            input_points_for_completion = self.sample_for_prior(pc, 256) # not sure where the no. of points per object is set
-            completion_loss, shape_example = self.completion.compute_loss(None,
-                                                                        input_points_for_completion,
-                                                                        data['object_labels'],
-                                                                        data['object_voxels'], export_shape)
+            input_points = self.sample_for_prior(pc, 256) # not sure where the no. of points per object is set
+            logits, features_for_completion = self.class_encode(input_points)
+            completion_loss, shape_example = self.completion.compute_loss(features_for_completion,
+                                                                        #xyz, # just a 3D grid
+                                                                        data['object_labels'], # class labels for ShapeNet
+                                                                        data['occ_grid'], # Labels in out
+                                                                        export_shape) 
             completion_loss = completion_loss.unsqueeze(0)
-            return completion_loss.unsqueeze(0), shape_example # end_points,  BATCH_PROPOSAL_IDs removed
+            return logits, features_for_completion, completion_loss.unsqueeze(0), shape_example # end_points,  BATCH_PROPOSAL_IDs removed
         else:
+            pass
             # not yet decided
-            return super(ISCNet_WEAK, self).forward(data, export_shape)
+            # return super(ISCNet_WEAK, self).forward(data, export_shape)
 
 
