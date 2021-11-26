@@ -31,7 +31,7 @@ data:
 model:
   completion:
     method: ONet
-    loss: ONet_Loss # reconstruction loss
+    loss: ONet_Prior_Loss # reconstruction loss
     weight: 0.7
   class_encode:
     metod: ClassEncoder

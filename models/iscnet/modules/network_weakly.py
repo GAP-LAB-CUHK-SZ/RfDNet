@@ -17,7 +17,7 @@ from net_utils.box_util import get_3d_box
 from .network import ISCNet
 
 @METHODS.register_module
-class ISCNet_WEAK(ISCNet):
+class ISCNet_WEAK(BaseNetwork):
     def __init__(self, cfg):
         '''
         load submodules for the network.
@@ -67,20 +67,33 @@ class ISCNet_WEAK(ISCNet):
         :param export_shape: if output shape voxels for visualization
         :return: end_points: dict
         '''
-        if self.cfg.config[self.cfg.config['mode']]['phase'] != 'prior':
+        if self.cfg.config[self.cfg.config['mode']]['phase'] == 'prior':
             pc = data['point_clouds']
             input_points = self.sample_for_prior(pc, 256) # not sure where the no. of points per object is set
             logits, features_for_completion = self.class_encode(input_points)
             completion_loss, shape_example = self.completion.compute_loss(features_for_completion,
-                                                                        #xyz, # just a 3D grid
+                                                                        data['xyz_query'], # just a 3D grid
                                                                         data['object_labels'], # class labels for ShapeNet
-                                                                        data['occ_grid'], # Labels in out
+                                                                        data['xyz_query'], # Labels in out
                                                                         export_shape) 
-            completion_loss = completion_loss.unsqueeze(0)
-            return logits, features_for_completion, completion_loss.unsqueeze(0), shape_example # end_points,  BATCH_PROPOSAL_IDs removed
+            return logits, features_for_completion, completion_loss, shape_example # end_points,  BATCH_PROPOSAL_IDs removed
         else:
             pass
             # not yet decided
             # return super(ISCNet_WEAK, self).forward(data, export_shape)
 
 
+    def loss(self, est_data, gt_data):
+        '''
+        calculate loss of est_out given gt_out.
+        '''
+        completion_loss = est_data[2]
+        total_loss = {}
+        if self.cfg.config[self.cfg.config['mode']]['phase'] == 'prior':
+            completion_loss = self.completion_loss(completion_loss)
+            class_loss = self.class_encode(est_data, gt_data)
+            total_loss = {'completion_loss': completion_loss,
+                          'class_loss':class_loss}
+            total_loss['total'] = class_loss + completion_loss
+
+        return total_loss

@@ -21,6 +21,7 @@ criterion_heading_class = nn.CrossEntropyLoss(reduction='none')
 objectness_criterion = nn.CrossEntropyLoss(torch.Tensor(OBJECTNESS_CLS_WEIGHTS).cuda(), reduction='none')
 criterion_size_class = nn.CrossEntropyLoss(reduction='none')
 criterion_sem_cls = nn.CrossEntropyLoss(reduction='none')
+criterion_prior_cls = nn.CrossEntropyLoss()
 
 class BaseLoss(object):
     '''base loss class'''
@@ -414,10 +415,16 @@ class BoxNetDetectionLoss(BaseLoss):
 
 
 @LOSSES.register_module
+class ONet_Prior_Loss(BaseLoss):
+    def __call__(self, value):
+        return value*self.weight
+
+@LOSSES.register_module
 class PriorClassificationLoss(BaseLoss):
     def __call__(self, est_data, gt_data, dataset_config):
         '''
         just calculates the loss of logits.. and maybe doing
         some metric learning loss on features
         '''
-        pass
+        logits, _, _ ,_ = est_data
+        return criterion_prior_cls(logits, gt_data["cls_label"])*self.weight
