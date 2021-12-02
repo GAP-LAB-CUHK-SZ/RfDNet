@@ -99,10 +99,18 @@ or <br>
     datasets/ShapeNetCore.v2
    ```
    
-2. Process ShapeNet models into watertight meshes by
+2. Process ShapeNet models into watertight meshes by the following.
    
     ```
     python utils/shapenet/1_fuse_shapenetv2.py
+   ```
+   
+   If it does not work, please delete the `./build` and `.so` file in `external/librender/` and recompile the pyrender by
+   
+    ```
+    cd RfDNet/external/librender
+    rm -rf ./build ./*.so
+    python setup.py build_ext --inplace
    ```
    
 3. Sample points on ShapeNet models for training (similar to [Occupancy Networks](https://github.com/autonomousvision/occupancy_networks)).
