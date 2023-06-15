@@ -84,7 +84,7 @@ or <br>
    ```
 
 ##### Preprocess ShapeNet data
-You can either directly download the processed data [[link](https://tumde-my.sharepoint.com/:u:/g/personal/yinyu_nie_tum_de/EQfn3F28ie9LlM6qq66QuXcBFe4HjCsBZGJtm9eLw9XrhQ?e=VzKHVz)] and extract them to `datasets/ShapeNetv2_data/` as below
+You can either directly download the processed data [[link](https://tumde-my.sharepoint.com/:u:/g/personal/yinyu_nie_tum_de/EdfuuVMazH1Bjt-GEyFA-LMBbQ0jdqqgdoktC4rZwOhiWA?e=ijXnxb)] and extract them to `datasets/ShapeNetv2_data/` as below
 ```
 datasets/ShapeNetv2_data/point
 datasets/ShapeNetv2_data/pointcloud
