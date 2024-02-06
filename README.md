@@ -37,7 +37,7 @@ From an incomplete point cloud of a 3D scene (left), our method learns to jointl
 ---
 
 ### Demo
-The pretrained model can be downloaded [here](https://tumde-my.sharepoint.com/:u:/g/personal/yinyu_nie_tum_de/EegvrRsKIj9BsArsJl0BUREB2Yx_I34hwTp9l7UcJMFFoQ?e=9ZDYBz). Put the pretrained model in the directory as below
+The pretrained model can be downloaded [here](https://drive.google.com/file/d/1GnUdyQN0wc81fRiyzQN1iBlp4CBt9N4N/view?usp=sharing). Put the pretrained model in the directory as below
 
 ```
 out/pretrained_models/pretrained_weight.pth
