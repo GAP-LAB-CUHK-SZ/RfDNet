@@ -63,7 +63,7 @@ In our paper, we use the input point cloud from the [ScanNet](http://www.scan-ne
 Scan2CAD aligns the object CAD models from [ShapeNetCore.v2](https://shapenet.org/) to each object in ScanNet, and we use these aligned CAD models as the ground-truth.
 
 ##### Preprocess ScanNet and Scan2CAD data
-You can either directly download the processed samples [[link](https://tumde-my.sharepoint.com/:u:/g/personal/yinyu_nie_tum_de/EdTtS1JDX35DoZHj11Y5Vb8Bw89ollS_-pxiPGPjqvqZyA?e=Fy1hZx)] to the directory below (recommended)
+You can either directly download the processed samples [[link](https://drive.google.com/file/d/15YmJV78-4Edq5CUfpX519SySfC90EArs/view?usp=sharing)] to the directory below (recommended)
 ```
 datasets/scannet/processed_data/
 ```
@@ -84,7 +84,7 @@ or <br>
    ```
 
 ##### Preprocess ShapeNet data
-You can either directly download the processed data [[link](https://tumde-my.sharepoint.com/:u:/g/personal/yinyu_nie_tum_de/EdfuuVMazH1Bjt-GEyFA-LMBbQ0jdqqgdoktC4rZwOhiWA?e=R0TGLs)] and extract them to `datasets/ShapeNetv2_data/` as below
+You can either directly download the processed data [[link](https://drive.google.com/file/d/1lQCh8uE30Vkms3pMIgOv6aXYHvu7_AFO/view?usp=sharing)] and extract them to `datasets/ShapeNetv2_data/` as below
 ```
 datasets/ShapeNetv2_data/point
 datasets/ShapeNetv2_data/pointcloud
