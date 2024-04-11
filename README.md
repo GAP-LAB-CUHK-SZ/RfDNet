@@ -37,7 +37,7 @@ From an incomplete point cloud of a 3D scene (left), our method learns to jointl
 ---
 
 ### Demo
-The pretrained model can be downloaded [here](https://drive.google.com/file/d/1GnUdyQN0wc81fRiyzQN1iBlp4CBt9N4N/view?usp=sharing). Put the pretrained model in the directory as below
+The pretrained model can be downloaded [here](https://cuhko365.sharepoint.com/:u:/s/CUHKSZ_SSE_GAP-Lab2/ERtR8cdCToNFoTC-2W_04LoB7u5792EC8AbZvw2kOJyd8A?e=dWv3RG). Put the pretrained model in the directory as below
 
 ```
 out/pretrained_models/pretrained_weight.pth
@@ -63,7 +63,7 @@ In our paper, we use the input point cloud from the [ScanNet](http://www.scan-ne
 Scan2CAD aligns the object CAD models from [ShapeNetCore.v2](https://shapenet.org/) to each object in ScanNet, and we use these aligned CAD models as the ground-truth.
 
 ##### Preprocess ScanNet and Scan2CAD data
-You can either directly download the processed samples [[link](https://drive.google.com/file/d/15YmJV78-4Edq5CUfpX519SySfC90EArs/view?usp=sharing)] to the directory below (recommended)
+You can either directly download the processed samples [[link](https://cuhko365.sharepoint.com/:u:/s/CUHKSZ_SSE_GAP-Lab2/ESDZ786xy-FAkYo99DaiZrkB9XUJ0AXCV5jvVVdbQp0maA?e=TfNT6J)] to the directory below (recommended)
 ```
 datasets/scannet/processed_data/
 ```
@@ -84,7 +84,7 @@ or <br>
    ```
 
 ##### Preprocess ShapeNet data
-You can either directly download the processed data [[link](https://drive.google.com/file/d/1lQCh8uE30Vkms3pMIgOv6aXYHvu7_AFO/view?usp=sharing)] and extract them to `datasets/ShapeNetv2_data/` as below
+You can either directly download the processed data [[link](https://cuhko365.sharepoint.com/:u:/s/CUHKSZ_SSE_GAP-Lab2/EWQ0PiEY0qVImiWHH2ku7HEBCV8mjeIbj5Hcpa84adiA2Q?e=30iYKX)] and extract them to `datasets/ShapeNetv2_data/` as below
 ```
 datasets/ShapeNetv2_data/point
 datasets/ShapeNetv2_data/pointcloud
